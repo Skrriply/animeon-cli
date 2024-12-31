@@ -1,7 +1,9 @@
 import logging
 import subprocess
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
+
+from src.config import MPV_DEFAULT_COMMAND
 
 logger = logging.getLogger(__name__)
 
@@ -19,13 +21,28 @@ class VideoPlayer(ABC):
         """
         pass
 
+    @staticmethod
+    def _validate_urls(urls: List[str]) -> bool:
+        """
+        Validates URLs.
+
+        Args:
+            urls: List of video URLs.
+
+        Returns:
+            True if URLs are valid, False otherwise.
+        """
+        if not urls:
+            logger.error("Посилання на відео відсутні.")
+            return False
+        return True
+
 
 class MpvPlayer(VideoPlayer):
     """Video player using mpv."""
 
-    def __init__(self, extra_args: Optional[List[str]] = None) -> None:
+    def __init__(self) -> None:
         """Initializes the player."""
-        self.extra_args = extra_args or []
         self._check_mpv_installed()
 
     @staticmethod
@@ -45,18 +62,13 @@ class MpvPlayer(VideoPlayer):
         Args:
             urls: List of video URLs.
         """
-        if not urls:
-            logger.error("Посилання на відео відсутні.")
-            return
+        self._validate_urls(urls)
 
         try:
-            logger.info(f"Відтворення {len(urls)} епізодів через mpv")
-            logger.debug(f"Додаткові аргументи: {self.extra_args}")
-            logger.debug(f"Посилання: {urls}")
+            logger.info(f"Відтворення {len(urls)} епізодів через mpv.")
+            logger.debug(f"Посилання: {urls}.")
 
-            command = ["mpv"] + self.extra_args + urls
+            command = MPV_DEFAULT_COMMAND + urls
             subprocess.run(command, capture_output=True, check=True)
-        except FileNotFoundError:
-            logger.error("Плеєр mpv не встановлено!")
         except subprocess.SubprocessError as error:
-            logger.error(f"Помилка запуску mpv: {error}")
+            logger.error(f"Помилка запуску mpv: {error}.")

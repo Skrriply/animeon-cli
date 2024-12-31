@@ -1,21 +1,10 @@
 import logging
 
-# Constants
-LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+from src.config import LOG_COLORS, LOG_DATE_FORMAT, LOG_FORMAT, LOG_RESET
 
 
 class ColorFormatter(logging.Formatter):
     """Logging formatter that adds color to log messages."""
-
-    COLORS = {
-        logging.DEBUG: "\033[0;36m",  # Cyan
-        logging.INFO: "\033[0;32m",  # Green
-        logging.WARNING: "\033[0;33m",  # Yellow
-        logging.ERROR: "\033[0;31m",  # Red
-        logging.CRITICAL: "\033[0;35m",  # Magenta
-    }
-    RESET = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:
         """Formats the log record with color.
@@ -26,8 +15,8 @@ class ColorFormatter(logging.Formatter):
         Returns:
             Formatted log message.
         """
-        levelname_color = self.COLORS.get(record.levelno, self.RESET)
-        record.levelname = f"{levelname_color}{record.levelname}{self.RESET}"
+        levelname_color = LOG_COLORS.get(record.levelno, LOG_RESET)
+        record.levelname = f"{levelname_color}{record.levelname}{LOG_RESET}"
 
         return super().format(record)
 

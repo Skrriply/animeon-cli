@@ -2,27 +2,13 @@ import logging
 import subprocess
 from typing import List, Optional, Set
 
+from src.config import FZF_DEFAULT_COMMAND
+
 logger = logging.getLogger(__name__)
 
 
 class Prompt:
     """Class for prompting user with fzf."""
-
-    FZF_BASE_COMMAND = ["fzf", "--reverse", "--cycle"]
-
-    def __init__(self) -> None:
-        """Initializes the class."""
-        self._check_fzf_installed()
-
-    @staticmethod
-    def _check_fzf_installed() -> None:
-        """Checks if fzf is installed."""
-        try:
-            logger.debug("Перевірка встановлення fzf.")
-            subprocess.run(["fzf", "--version"], capture_output=True, check=True)
-        except FileNotFoundError:
-            logger.error("fzf не встановлено!")
-            raise
 
     @staticmethod
     def _validate_options(options: List[str]) -> bool:
@@ -45,7 +31,7 @@ class Prompt:
         Prompts user to select one option.
 
         Args:
-            prompt_text: Prompt text.
+            prompt_text: Input prompt text.
             options: List of options.
 
         Returns:
@@ -54,7 +40,8 @@ class Prompt:
         if not self._validate_options(options):
             return None
 
-        command = self.FZF_BASE_COMMAND + ["--prompt", prompt_text]
+        # Changes input prompt text
+        command = [*FZF_DEFAULT_COMMAND, "--prompt", prompt_text]
 
         return self._run_fzf(command, "\n".join(options))
 
@@ -63,7 +50,7 @@ class Prompt:
         Prompts user to select multiple options.
 
         Args:
-            prompt_text: Prompt text.
+            prompt_text: Input prompt text.
             options: List of options.
 
         Returns:
@@ -72,7 +59,8 @@ class Prompt:
         if not self._validate_options(options):
             return None
 
-        command = self.FZF_BASE_COMMAND + ["--prompt", prompt_text, "--multi"]
+        # Changes input prompt text and enables multiselection
+        command = FZF_DEFAULT_COMMAND + ["--prompt", prompt_text, "--multi"]
 
         stdout = self._run_fzf(command, "\n".join(options))
 
@@ -86,7 +74,7 @@ class Prompt:
         Runs fzf with the specified command and input.
 
         Args:
-            fzf_command: Command to run fzf.
+            command: Command to run fzf.
             input_: Input for fzf.
 
         Returns:
@@ -106,5 +94,5 @@ class Prompt:
 
             return process.stdout.strip()
         except subprocess.CalledProcessError:
-            logger.error("Помилка при виконанні fzf")
+            logger.error("Помилка при виконанні fzf.")
             return None
