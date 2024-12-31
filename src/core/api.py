@@ -82,7 +82,7 @@ class AnimeAPI:
         Returns:
             List of Episode objects if successful, None otherwise.
         """
-        endpoint = f"api/anime/player/episodes/{player_id}/{fandub_id}"
+        endpoint = f"api/player/episodes/{player_id}/{fandub_id}"
         data = self._get_data(endpoint)
 
         if not data:
@@ -101,7 +101,7 @@ class AnimeAPI:
         Returns:
             Video URL if successful, None otherwise.
         """
-        endpoint = f"api/anime/player/episode/{episode_id}"
+        endpoint = f"api/player/episode/{episode_id}"
         data = self._get_data(endpoint)
 
         if not data or "videoUrl" not in data:
@@ -120,7 +120,7 @@ class AnimeAPI:
         Returns:
             List of Fandub objects if successful, None otherwise
         """
-        endpoint = f"api/anime/player/fundubs/{anime_id}"
+        endpoint = f"api/player/fundubs/{anime_id}"
         data = self._get_data(endpoint)
 
         if not data:
