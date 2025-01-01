@@ -41,20 +41,6 @@ class VideoPlayer(ABC):
 class MpvPlayer(VideoPlayer):
     """Video player using mpv."""
 
-    def __init__(self) -> None:
-        """Initializes the player."""
-        self._check_mpv_installed()
-
-    @staticmethod
-    def _check_mpv_installed() -> None:
-        """Checks if fzf is installed."""
-        try:
-            logger.debug("Перевірка встановлення mpv.")
-            subprocess.run(["mpv", "--version"], capture_output=True, check=True)
-        except FileNotFoundError:
-            logger.error("mpv не встановлено!")
-            raise
-
     def play(self, urls: List[str]) -> None:
         """
         Plays video from the specified URLs using mpv.

@@ -27,3 +27,6 @@ FZF_DEFAULT_COMMAND = [
     "--marker=◆ ",
 ]
 MPV_DEFAULT_COMMAND = ["mpv"]
+
+# Required system dependencies
+DEPENDENCIES = {"fzf": ["fzf", "--version"], "mpv": ["mpv", "--version"]}
