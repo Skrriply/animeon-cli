@@ -16,7 +16,7 @@ def normalize_query(query: str) -> str:
     query = query.replace("#", "%23")
     query = query.replace("&", "%26")
     query = query.replace("=", "%3D")
-    query = query.replace(" ", "+")
+    query = query.replace(" ", "%20")
 
     return query
 
