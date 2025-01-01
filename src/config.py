@@ -27,6 +27,13 @@ FZF_DEFAULT_COMMAND = [
     "--marker=◆ ",
 ]
 MPV_DEFAULT_COMMAND = ["mpv"]
+CHAFA_DEFAULT_COMMAND = ["chafa", "--format=sixels", "--size=45x25"]
+JQ_DEFAULT_COMMAND = ["jq", "-r"]
 
 # Required system dependencies
-DEPENDENCIES = {"fzf": ["fzf", "--version"], "mpv": ["mpv", "--version"]}
+DEPENDENCIES = {
+    "fzf": ["fzf", "--version"],
+    "mpv": ["mpv", "--version"],
+    "chafa": ["chafa", "--version"],
+    "jq": ["jq", "--version"],
+}

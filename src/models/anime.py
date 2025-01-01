@@ -1,6 +1,5 @@
 import re
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -18,9 +17,7 @@ class Anime:
         episodes: Number of episodes of the anime.
         episodes_aired: Number of episodes aired of the anime.
         status: Status of the anime.
-        genres: List of genres of the anime.
         release_year: Year the anime was released.
-        studio: Studio that produced the anime.
         producer: Producer of the anime.
         description: Description of the anime.
         mal_id: MyAnimeList ID of the anime.
@@ -35,9 +32,7 @@ class Anime:
     episodes: int
     episodes_aired: int
     status: str
-    genres: List[str]
     release_year: int
-    studio: str
     producer: str
     description: str
     mal_id: int

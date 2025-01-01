@@ -2,7 +2,7 @@ import logging
 import subprocess
 from typing import List, Optional, Set
 
-from src.config import FZF_DEFAULT_COMMAND
+from src.config import FZF_DEFAULT_COMMAND, JQ_DEFAULT_COMMAND
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,9 @@ class Prompt:
             return False
         return True
 
-    def single_select(self, prompt_text: str, options: List[str]) -> Optional[str]:
+    def single_select(
+        self, prompt_text: str, options: List[str], preview_file: Optional[str] = None
+    ) -> Optional[str]:
         """
         Prompts user to select one option.
 
@@ -42,6 +44,11 @@ class Prompt:
 
         # Changes input prompt text
         command = [*FZF_DEFAULT_COMMAND, "--prompt", prompt_text]
+
+        # Adds preview if preview file is provided
+        if preview_file:
+            preview_command = f"{' '.join(JQ_DEFAULT_COMMAND)} --arg title {{}} '.[$title]' {preview_file}"
+            command.extend(["--preview", preview_command])
 
         return self._run_fzf(command, "\n".join(options))
 

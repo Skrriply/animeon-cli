@@ -3,6 +3,7 @@ import logging
 from src.core import AnimeAPI
 from src.ui import CLI, ContentSelector, MpvPlayer, Prompt
 from src.ui.commands import SearchCommand
+from src.ui.preview import AnimePreviewGenerator
 from src.utils import setup_logging, check_dependencies
 
 logger = logging.getLogger(__name__)
@@ -16,10 +17,11 @@ def main() -> None:
         
         api_client = AnimeAPI()
         prompt = Prompt()
-        selector = ContentSelector(prompt)
+        preview_generator = AnimePreviewGenerator()
+        selector = ContentSelector(prompt, preview_generator)
         player = MpvPlayer()
         commands = {"search": SearchCommand(api_client, selector, player)}
-        cli = CLI(commands)  # type: ignore
+        cli = CLI(commands)
         args = cli.parse_args()
 
         # Sets up logging if logview is enabled

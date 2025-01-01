@@ -63,23 +63,19 @@ class AnimeAPI:
             Anime object.
         """
         try:
+            poster_data = data.get("image", {})
+            poster = poster_data.get("original") or poster_data.get("preview")
             return Anime(
                 id_=data["id"],
                 title=data["titleUa"],
-                poster=self._get_poster_url(data.get("image", {}).get("original")),
+                poster=self._get_poster_url(poster),
                 rating=data.get("malScored", 0.0),
                 scored_by=data.get("malScoredBy", 0),
                 type_=data.get("type", ""),
                 episodes=data.get("episodes", 0),
                 episodes_aired=data.get("episodesAired", 0),
                 status=data.get("status", ""),
-                genres=[
-                    genre["nameUa"]
-                    for genre in data.get("genres", [])
-                    if "nameUa" in genre
-                ],
                 release_year=int(data.get("releaseDate", 0)),
-                studio=data.get("studio", {}).get("name", ""),
                 producer=data.get("producer", ""),
                 description=data.get("description", ""),
                 mal_id=int(data.get("malId", 0)),
@@ -129,7 +125,7 @@ class AnimeAPI:
             return None
 
         endpoint = f"api/anime/search/{encoded_query}"
-        params = {"full": "false"}
+        params = {"full": "true"}
         data = self._get_data(endpoint, params)
 
         if not data or "result" not in data:
@@ -194,7 +190,4 @@ class AnimeAPI:
             logger.error("Запит повернув неправильні дані.")
             return None
 
-        return [
-            fandub for item in data
-            if (fandub := self._parse_fandub(item))
-        ]
+        return [fandub for item in data if (fandub := self._parse_fandub(item))]
