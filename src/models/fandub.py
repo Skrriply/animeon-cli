@@ -15,6 +15,14 @@ class Fandub:
         players: List of players associated with this fandub.
     """
 
-    id: int
+    id_: int
     name: str
     players: List[Player]
+
+    def __post_init__(self) -> None:
+        """
+        Post initialization method.
+        """
+        # Some names have extra spaces
+        # For example: " Glass Moon" with ID 1472
+        self.name = self.name.strip()

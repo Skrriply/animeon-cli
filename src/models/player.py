@@ -7,9 +7,9 @@ class Player:
     Player model.
 
     Attributes:
-        id: ID of the player.
+        id_: ID of the player.
         name: Name of the player.
     """
 
-    id: int
+    id_: int
     name: str

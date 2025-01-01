@@ -7,9 +7,9 @@ class Episode:
     Episode model.
 
     Attributes:
-        id: ID of the episode.
+        id_: ID of the episode.
         episode: Episode number.
     """
 
-    id: int
+    id_: int
     episode: int

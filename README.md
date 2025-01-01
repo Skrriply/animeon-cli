@@ -19,6 +19,8 @@ _Натхнений [ani-cli](https://github.com/pystardust/ani-cli)_
 - [Python 3.10+](https://www.python.org/downloads/) - інтерпретатор Python
 - [mpv](https://github.com/mpv-player/mpv) - відеоплеєр
 - [fzf](https://github.com/junegunn/fzf) - інтерактивний пошук
+- [chafa](https://github.com/hpjansson/chafa) - відображення зображень
+- [jq](https://github.com/jqlang/jq) - оброблення JSON
 
 ## 🚀 Встановлення
 

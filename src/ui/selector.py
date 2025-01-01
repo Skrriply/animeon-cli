@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from src.models import Anime, Episode, Fandub, Player
 
+from .preview import AnimePreviewGenerator
 from .prompt import Prompt
 
 logger = logging.getLogger(__name__)
@@ -11,14 +12,18 @@ logger = logging.getLogger(__name__)
 class ContentSelector:
     """Class for selecting anime content."""
 
-    def __init__(self, prompt: Prompt) -> None:
+    def __init__(
+        self, prompt: Prompt, preview_generator: AnimePreviewGenerator
+    ) -> None:
         """
         Initializes the class.
 
         Args:
             prompt: Prompt object.
+            preview_generator: AnimePreviewGenerator object.
         """
         self.prompt = Prompt()
+        self.preview_generator = preview_generator
 
     def select_anime(self, anime_list: List[Anime]) -> Optional[Anime]:
         """
@@ -30,8 +35,9 @@ class ContentSelector:
         Returns:
             Selected anime or None if no anime is selected.
         """
+        preview_file = self.preview_generator.generate(anime_list)
         anime_titles = [anime.title for anime in anime_list]
-        selected_title = self.prompt.single_select("Оберіть аніме: ", anime_titles)
+        selected_title = self.prompt.single_select("Оберіть аніме: ", anime_titles, preview_file=preview_file)
 
         if not selected_title:
             logger.info("Аніме не обрано.")

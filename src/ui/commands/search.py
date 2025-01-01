@@ -53,7 +53,7 @@ class SearchCommand(BaseCommand):
         logger.debug(f"Обрано аніме: {selected_anime.title}")
 
         # Gets fandub
-        fandubs = self.api.get_fandubs_and_players(selected_anime.id)
+        fandubs = self.api.get_fandubs_and_players(selected_anime.id_)
         if not fandubs:
             logging.error("Озвучень для цього аніме не знайдено.")
             return
@@ -84,7 +84,7 @@ class SearchCommand(BaseCommand):
         logger.debug(f"Обрано плеєр: {selected_player.name}")
 
         # Gets episodes
-        episodes = self.api.get_episodes(selected_player.id, selected_fandub.id)
+        episodes = self.api.get_episodes(selected_player.id_, selected_fandub.id_)
         if not episodes:
             logging.error("Епізодів не знайдено.")
             return
@@ -100,7 +100,7 @@ class SearchCommand(BaseCommand):
         logger.debug(f"Обрано {len(selected_episodes)} епізодів.")
 
         # Gets video URLs for selected episodes
-        episode_ids = [episode.id for episode in selected_episodes]
+        episode_ids = [episode.id_ for episode in selected_episodes]
         urls = [self.api.get_video_url(id) for id in episode_ids]
         if not urls:
             logging.error("Посилань на епізоди не знайдено.")

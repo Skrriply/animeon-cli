@@ -1,6 +1,6 @@
 import argparse
 import logging
-from typing import Dict
+from typing import Mapping
 
 from src import __version__
 from src.ui.commands import BaseCommand
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class CLI:
     """Command Line Interface for AnimeON."""
 
-    def __init__(self, commands: Dict[str, BaseCommand]) -> None:
+    def __init__(self, commands: Mapping[str, BaseCommand]) -> None:
         """
         Initializes CLI application.
 
