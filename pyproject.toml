@@ -1,16 +1,16 @@
 [tool.poetry]
 name = "animeon"
-version = "0.1.0"
+version = "0.1.1"
 description = "CLI tool for searching and watching anime"
 authors = ["Skrriply"]
 license = "GPL-3.0"
 readme = "README.md"
-repository = "https://github.com/Skrriply/AnimeOn-CLI"
-packages = [{include = "src"}]
+repository = "https://github.com/Skrriply/animeon-cli"
+packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-requests = "^2.31.0"
+requests = "^2.32.3"
 
 [tool.poetry.scripts]
 animeon = "src.__main__:main"
