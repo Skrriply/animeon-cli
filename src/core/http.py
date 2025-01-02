@@ -40,20 +40,21 @@ class HTTPClient:
         """
         try:
             with self._session as session:
-                logger.debug(f"Виконується GET запит до {url}")
-                logger.debug(f"Параметри: {params}")
-                logger.debug(f"HTTP заголовки: {headers}")
+                logger.debug(f"Making GET request to {url}")
+                logger.debug(f"Parameters: {params}")
+                logger.debug(f"HTTP headers: {headers}")
 
                 response = session.get(url, params=params, headers=headers)
                 response.raise_for_status()
 
-                logger.debug(f"Відповідь від сервера: {response.status_code}")
+                logger.debug(f"Server response: {response.status_code}")
+
                 return response.json() if as_json else response.content
         except requests.exceptions.ConnectionError as error:
-            logger.error(f"Помилка з'єднання: {error}")
+            logger.error(f"Connection error: {error}")
         except requests.exceptions.Timeout as error:
-            logger.error(f"Час відповіді вичерпано: {error}")
+            logger.error(f"Request timed out: {error}")
         except requests.exceptions.HTTPError as error:
-            logger.error(f"Не вдалося виконати запит: {error}")
+            logger.error(f"Failed to make request: {error}")
         except requests.exceptions.JSONDecodeError as error:
-            logger.error(f"Помилка декодування JSON: {error}")
+            logger.error(f"JSON decode error: {error}")

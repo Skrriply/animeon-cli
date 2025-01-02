@@ -41,4 +41,4 @@ def setup_logging() -> None:
     root_logger.addHandler(console_handler)
 
     logger = logging.getLogger(__name__)
-    logger.info("Логування розпочато.")
+    logger.info("Logging started")

@@ -46,6 +46,8 @@ class AnimePreviewGenerator:
         Returns:
             Formatted string.
         """
+        logger.debug(f"Creating preview for anime: {anime.title}")
+
         poster = self._generate_image_preview(anime.poster)
         type_ = self.TYPES.get(anime.type_, "Невідомо")
         rating = (
@@ -82,6 +84,8 @@ class AnimePreviewGenerator:
         Returns:
             ASCII art string if successful, None if failed.
         """
+        logger.debug(f"Generating image preview for URL: {image_url}")
+
         try:
             image = self.http_client.get(image_url, as_json=False)
 
@@ -93,7 +97,7 @@ class AnimePreviewGenerator:
 
             return process.stdout.decode().strip()
         except subprocess.CalledProcessError as error:
-            logger.error(f"Помилка при виконанні команди: {error}.")
+            logger.error(f"Error executing chafa: {error}")
             return None
 
     def generate(self, anime_list: List[Anime]) -> str:
@@ -106,15 +110,19 @@ class AnimePreviewGenerator:
         Returns:
             Path to temporary JSON file containing preview data.
         """
+        logger.info(f"Generating previews for {len(anime_list)} anime")
+
         previews = {}
         for anime in anime_list:
             previews[anime.title] = self._create_preview(anime)
 
-        # Creates temporary JSON file
+        logger.debug("Creating temporary JSON file")
+
         with tempfile.NamedTemporaryFile(
             mode="w", encoding="utf-8", suffix=".json", delete=False
         ) as preview_file:
             json.dump(previews, preview_file, ensure_ascii=False, indent=4)
             preview_file_path = preview_file.name
+            logger.debug(f"Created temporary file at: {preview_file_path}")
 
         return preview_file_path

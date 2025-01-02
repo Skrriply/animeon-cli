@@ -22,7 +22,7 @@ class Prompt:
             True if options are valid, False otherwise.
         """
         if not options:
-            logger.warning("Немає доступних опцій для вибору")
+            logger.warning("No options available for selection")
             return False
         return True
 
@@ -100,6 +100,6 @@ class Prompt:
                 return None
 
             return process.stdout.strip()
-        except subprocess.CalledProcessError:
-            logger.error("Помилка при виконанні fzf.")
+        except subprocess.CalledProcessError as error:
+            logger.error(f"Error executing fzf: {error}")
             return None

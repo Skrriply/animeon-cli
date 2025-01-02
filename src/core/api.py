@@ -37,7 +37,7 @@ class AnimeAPI:
         """
         url = build_url(API_BASE_URL, endpoint)
 
-        logger.debug(f"Виконується GET запит до {url} з параметрами: {params}")
+        logger.debug(f"Making GET request to {url} with parameters: {params}")
         return self.http_client.get(url, params=params, headers=API_HEADERS)
 
     @staticmethod
@@ -52,7 +52,7 @@ class AnimeAPI:
             URL for poster image if successful, empty string otherwise.
         """
         if not poster:
-            logger.warning("Постер не знайдено.")
+            logger.warning("Poster not found")
             return ""
 
         return build_url(API_BASE_URL, f"api/uploads/images/{poster}")
@@ -86,7 +86,7 @@ class AnimeAPI:
                 mal_id=int(data.get("malId", 0)),
             )
         except (KeyError, ValueError) as error:
-            logger.warning(f"Не вдалося розібрати дані про аніме: {error}.")
+            logger.warning(f"Failed to parse anime data: {error}")
             return None
 
     def _parse_fandub(self, data: Dict[str, Any]) -> Optional[Fandub]:
@@ -110,7 +110,7 @@ class AnimeAPI:
                 ],
             )
         except (KeyError, ValueError) as error:
-            logger.warning(f"Не вдалося розібрати дані про озвучення: {error}.")
+            logger.warning(f"Failed to parse fandub data: {error}")
             return None
 
     def search(self, query: str) -> Optional[List[Anime]]:
@@ -123,10 +123,11 @@ class AnimeAPI:
         Returns:
             List of Anime objects if successful, None otherwise.
         """
-        encoded_query = normalize_query(query)
+        logger.info(f"Searching anime with query: {query}.")
 
+        encoded_query = normalize_query(query)
         if not encoded_query:
-            logger.error("Запит порожній або містить заборонені символи.")
+            logger.error("Search query is empty or contains invalid characters.")
             return None
 
         endpoint = f"api/anime/search/{encoded_query}"
@@ -134,7 +135,7 @@ class AnimeAPI:
         data = self._get_data(endpoint, params)
 
         if not data or "result" not in data:
-            logger.error("Запит повернув неправильні дані.")
+            logger.error("API returned invalid data")
             return None
 
         return [anime for item in data["result"] if (anime := self._parse_anime(item))]
@@ -154,7 +155,7 @@ class AnimeAPI:
         data = self._get_data(endpoint)
 
         if not data:
-            logger.error("Запит повернув неправильні дані.")
+            logger.error("API returned invalid data")
             return None
 
         return [Episode(id_=item["id"], episode=item["episode"]) for item in data]
@@ -173,7 +174,7 @@ class AnimeAPI:
         data = self._get_data(endpoint)
 
         if not data or "videoUrl" not in data:
-            logger.error("Запит повернув неправильні дані.")
+            logger.error("API returned invalid data")
             return None
 
         return data["videoUrl"]
@@ -192,7 +193,7 @@ class AnimeAPI:
         data = self._get_data(endpoint)
 
         if not data:
-            logger.error("Запит повернув неправильні дані.")
+            logger.error("API returned invalid data")
             return None
 
         return [fandub for item in data if (fandub := self._parse_fandub(item))]

@@ -32,9 +32,9 @@ def main() -> None:
 
         cli.run(args)
     except KeyboardInterrupt:
-        logger.info("Вихід...")
+        logger.info("Exit...")
     except Exception as error:
-        logger.error(f"Неочікувана помилка: {error}")
+        logger.error(f"Unexpected error: {error}")
 
 
 if __name__ == "__main__":

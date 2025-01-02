@@ -42,7 +42,7 @@ class ContentSelector:
         )
 
         if not selected_title:
-            logger.info("Аніме не обрано.")
+            logger.info("Anime not selected")
             return None
 
         return next(anime for anime in anime_list if anime.title == selected_title)
@@ -61,7 +61,7 @@ class ContentSelector:
         selected_name = self.prompt.single_select("Оберіть озвучення: ", fandub_names)
 
         if not selected_name:
-            logger.info("Озвучення не обрано.")
+            logger.info("Fandub not selected")
             return None
 
         return next(fandub for fandub in fandubs if fandub.name == selected_name)
@@ -80,7 +80,7 @@ class ContentSelector:
         selected_name = self.prompt.single_select("Оберіть плеєр: ", player_names)
 
         if not selected_name:
-            logger.info("Плеєр не обрано.")
+            logger.info("Player not selected")
             return None
 
         return next(player for player in players if player.name == selected_name)
@@ -101,7 +101,7 @@ class ContentSelector:
         )
 
         if not selected_options:
-            logger.info("Епізоди не обрано.")
+            logger.info("Episodes not selected")
             return None
 
         return [
