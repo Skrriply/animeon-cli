@@ -27,9 +27,14 @@ class AnimePreviewGenerator:
         "anons": "Незабаром",
     }
 
-    def __init__(self) -> None:
-        """Initializes the generator."""
-        self.http_client = HTTPClient()
+    def __init__(self, http_client: HTTPClient) -> None:
+        """
+        Initializes the class.
+
+        Args:
+            http_client: HTTP client for making requests.
+        """
+        self.http_client = http_client
 
     def _create_preview(self, anime: Anime) -> str:
         """

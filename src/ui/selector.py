@@ -19,10 +19,10 @@ class ContentSelector:
         Initializes the class.
 
         Args:
-            prompt: Prompt object.
-            preview_generator: AnimePreviewGenerator object.
+            prompt: Interface for user prompting.
+            preview_generator: Object for creating previews of anime content.
         """
-        self.prompt = Prompt()
+        self.prompt = prompt
         self.preview_generator = preview_generator
 
     def select_anime(self, anime_list: List[Anime]) -> Optional[Anime]:
@@ -37,7 +37,9 @@ class ContentSelector:
         """
         preview_file = self.preview_generator.generate(anime_list)
         anime_titles = [anime.title for anime in anime_list]
-        selected_title = self.prompt.single_select("Оберіть аніме: ", anime_titles, preview_file=preview_file)
+        selected_title = self.prompt.single_select(
+            "Оберіть аніме: ", anime_titles, preview_file=preview_file
+        )
 
         if not selected_title:
             logger.info("Аніме не обрано.")

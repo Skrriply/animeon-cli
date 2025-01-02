@@ -10,7 +10,7 @@ class HTTPClient:
     """Client for making HTTP requests."""
 
     def __init__(self) -> None:
-        """Initializes client with a new session."""
+        """Initializes the class."""
         self._session = requests.Session()
 
     def get(

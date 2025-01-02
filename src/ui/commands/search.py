@@ -22,7 +22,7 @@ class SearchCommand(BaseCommand):
         player: VideoPlayer,
     ) -> None:
         """
-        Initializes command.
+        Initializes the command.
 
         Args:
             api_client: AnimeON API client.

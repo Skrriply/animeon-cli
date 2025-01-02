@@ -13,9 +13,14 @@ logger = logging.getLogger(__name__)
 class AnimeAPI:
     """Client for interacting with AnimeOn API."""
 
-    def __init__(self) -> None:
-        """Initializes AnimeOn client."""
-        self.http_client = HTTPClient()
+    def __init__(self, http_client: HTTPClient) -> None:
+        """
+        Initializes the class.
+
+        Args:
+            HTTP client for making requests.
+        """
+        self.http_client = http_client
 
     def _get_data(
         self, endpoint: str, params: Optional[Dict[str, str]] = None
