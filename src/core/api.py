@@ -123,11 +123,11 @@ class AnimeAPI:
         Returns:
             List of Anime objects if successful, None otherwise.
         """
-        logger.info(f"Searching anime with query: {query}.")
+        logger.info(f"Searching anime with query: {query}")
 
         encoded_query = normalize_query(query)
         if not encoded_query:
-            logger.error("Search query is empty or contains invalid characters.")
+            logger.error("Search query is empty or contains invalid characters")
             return None
 
         endpoint = f"api/anime/search/{encoded_query}"

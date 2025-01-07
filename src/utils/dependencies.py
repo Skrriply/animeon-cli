@@ -13,6 +13,9 @@ def check_dependencies() -> None:
     for name, command in DEPENDENCIES.items():
         try:
             logger.debug(f"Checking if {name} is installed")
-            subprocess.run(command, capture_output=True, check=True)
+            with subprocess.Popen(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            ) as process:
+                process.communicate()
         except (subprocess.SubprocessError, FileNotFoundError):
             logger.error(f"{name} is not installed!")

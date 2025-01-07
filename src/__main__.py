@@ -39,7 +39,7 @@ def main() -> None:
 
         cli.run(args)
     except KeyboardInterrupt:
-        logger.info("Exit...")
+        logger.info("Exiting...")
     except Exception as error:
         logger.error(f"Unexpected error: {error}")
 

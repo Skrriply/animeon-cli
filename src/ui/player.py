@@ -51,11 +51,13 @@ class MpvPlayer(VideoPlayer):
         self._validate_urls(urls)
 
         try:
-            formatted_urls = "\n- ".join(urls)
             logger.info(f"Playing {len(urls)} episodes via mpv")
-            logger.debug(f"URLs: {formatted_urls}")
+            logger.debug(f"URLs: {urls}")
 
             command = MPV_DEFAULT_COMMAND + urls
-            subprocess.run(command, capture_output=True, check=True)
-        except subprocess.CalledProcessError as error:
+            with subprocess.Popen(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            ) as process:
+                process.communicate()
+        except subprocess.SubprocessError as error:
             logger.error(f"Error executing mpv: {error}")

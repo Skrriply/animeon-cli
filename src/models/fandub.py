@@ -4,7 +4,7 @@ from typing import List
 from .player import Player
 
 
-@dataclass
+@dataclass(slots=True)
 class Fandub:
     """
     Fandub model.
