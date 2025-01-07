@@ -43,7 +43,7 @@ class CLI:
             help="Вивести версію застосунку",
         )
         parser.add_argument(
-            "-l", "--logview", action="store_true", help="Увімкнути режим налагодження"
+            "-d", "--debug", action="store_true", help="Увімкнути режим налагодження"
         )
         parser.add_argument("query", nargs="+", help="Пошуковий запит")
 

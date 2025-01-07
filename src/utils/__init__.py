@@ -1,5 +1,5 @@
 from .dependencies import check_dependencies
-from .logging import setup_logging
+from .logging import LoggerManager
 from .url import build_url, normalize_query
 
-__all__ = ["check_dependencies", "setup_logging", "build_url", "normalize_query"]
+__all__ = ["check_dependencies", "LoggerManager", "build_url", "normalize_query"]
