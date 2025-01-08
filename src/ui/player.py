@@ -33,7 +33,7 @@ class VideoPlayer(ABC):
             True if URLs are valid, False otherwise.
         """
         if not urls:
-            logger.error("Посилання на відео відсутні.")
+            logger.error("Video URLs are missing!")
             return False
         return True
 
@@ -51,10 +51,13 @@ class MpvPlayer(VideoPlayer):
         self._validate_urls(urls)
 
         try:
-            logger.info(f"Відтворення {len(urls)} епізодів через mpv.")
-            logger.debug(f"Посилання: {urls}.")
+            logger.info(f"Playing {len(urls)} episodes via mpv")
+            logger.debug(f"URLs: {urls}")
 
             command = MPV_DEFAULT_COMMAND + urls
-            subprocess.run(command, capture_output=True, check=True)
+            with subprocess.Popen(
+                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            ) as process:
+                process.communicate()
         except subprocess.SubprocessError as error:
-            logger.error(f"Помилка запуску mpv: {error}.")
+            logger.error(f"Error executing mpv: {error}")

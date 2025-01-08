@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(slots=True)
 class Anime:
     """
     Anime model.
@@ -42,18 +42,18 @@ class Anime:
         Post initialization method.
         """
         if self.description:
-            self.description = self._clean_description(self.description)
+            self.description = self._clean_text(self.description)
 
     @staticmethod
-    def _clean_description(text: str) -> str:
+    def _clean_text(text: str) -> str:
         """
-        Cleans description from Markdown links.
+        Cleans text from Markdown links.
 
         Args:
-            text: Description to clean.
+            text: Text to clean.
 
         Returns:
-            Cleaned description.
+            Cleaned text.
         """
         # Removes Markdown links
         text = re.sub(r"\[([^\]]+)\]\([^\)]+\)", r"\1", text)

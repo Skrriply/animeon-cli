@@ -22,7 +22,7 @@ class Prompt:
             True if options are valid, False otherwise.
         """
         if not options:
-            logger.warning("Немає доступних опцій для вибору")
+            logger.warning("No options available for selection")
             return False
         return True
 
@@ -67,7 +67,7 @@ class Prompt:
             return None
 
         # Changes input prompt text and enables multiselection
-        command = FZF_DEFAULT_COMMAND + ["--prompt", prompt_text, "--multi"]
+        command = [*FZF_DEFAULT_COMMAND, "--prompt", prompt_text, "--multi"]
 
         stdout = self._run_fzf(command, "\n".join(options))
 
@@ -88,18 +88,20 @@ class Prompt:
             Selected option(s) as string or None if no selection was made or error occurred.
         """
         try:
-            process = subprocess.run(
+            with subprocess.Popen(
                 command,
-                input=input_,
-                capture_output=True,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                check=True,
-            )
+            ) as process:
+                stdout, _ = process.communicate(input=input_)
 
-            if not process.stdout:
-                return None
+                return stdout.strip() if stdout else None
+        except subprocess.CalledProcessError as error:
+            if error.returncode == 130:
+                logger.info("User didn't select anything")
+            else:
+                logger.error(f"Error executing fzf: {error}")
 
-            return process.stdout.strip()
-        except subprocess.CalledProcessError:
-            logger.error("Помилка при виконанні fzf.")
             return None

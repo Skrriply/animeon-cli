@@ -22,7 +22,7 @@ class SearchCommand(BaseCommand):
         player: VideoPlayer,
     ) -> None:
         """
-        Initializes command.
+        Initializes the command.
 
         Args:
             api_client: AnimeON API client.
@@ -34,82 +34,82 @@ class SearchCommand(BaseCommand):
         self.player = player
 
     def execute(self, query: str) -> None:
-        logger.info(f"Пошук аніме за запитом: {query}")
+        logger.info(f"Searching anime for query: {query}")
 
         # Gets search results
         search_results = self.api.search(query)
         if not search_results:
-            logging.error("Аніме не знайдено.")
+            logging.error("Anime not found")
             return
 
-        logger.debug(f"Знайдено {len(search_results)} результатів пошуку.")
+        logger.debug(f"Found {len(search_results)} search results")
 
         # Selects anime
         selected_anime = self.selector.select_anime(search_results)
         if not selected_anime:
-            logging.info("Аніме не обрано.")
+            logging.info("Anime not selected")
             return
 
-        logger.debug(f"Обрано аніме: {selected_anime.title}")
+        logger.debug(f"Selected anime: {selected_anime.title}")
 
         # Gets fandub
         fandubs = self.api.get_fandubs_and_players(selected_anime.id_)
         if not fandubs:
-            logging.error("Озвучень для цього аніме не знайдено.")
+            logging.error("No fandubs found for this anime")
             return
 
-        logger.debug(f"Знайдено {len(fandubs)} озвучень для цього аніме.")
+        logger.debug(f"Found {len(fandubs)} fandubs for this anime")
 
         # Selects fandub
         selected_fandub = self.selector.select_fandub(fandubs)
         if not selected_fandub:
-            logging.info("Озвучення не обрано.")
+            logging.info("Fandub not selected")
             return
 
-        logger.debug(f"Обрано озвучення: {selected_fandub.name}")
+        logger.debug(f"Selected fandub: {selected_fandub.name}")
 
         # Gets player
         players = selected_fandub.players
         if not players:
-            logging.error("Плеєрів для цього озвучення не знайдено.")
+            logging.error("No players found for this fandub")
 
-        logger.debug(f"Знайдено {len(players)} плеєрів для цього озвучення.")
+        logger.debug(f"Found {len(players)} players for this fandub")
 
         # Selects player
         selected_player = self.selector.select_player(players)
         if not selected_player:
-            logging.info("Плеєр не обрано.")
+            logging.info("Player not selected")
             return
 
-        logger.debug(f"Обрано плеєр: {selected_player.name}")
+        logger.debug(f"Selected player: {selected_player.name}")
 
         # Gets episodes
         episodes = self.api.get_episodes(selected_player.id_, selected_fandub.id_)
         if not episodes:
-            logging.error("Епізодів не знайдено.")
+            logging.error("No episodes found")
             return
 
-        logger.debug(f"Знайдено {len(episodes)} епізодів.")
+        logger.debug(f"Found {len(episodes)} episodes")
 
         # Selects episodes
         selected_episodes = self.selector.select_episodes(episodes)
         if not selected_episodes:
-            logging.info("Епізоди не обрано.")
+            logging.info("Episodes not selected")
             return
 
-        logger.debug(f"Обрано {len(selected_episodes)} епізодів.")
+        logger.debug(f"Selected {len(selected_episodes)} episodes")
 
         # Gets video URLs for selected episodes
         episode_ids = [episode.id_ for episode in selected_episodes]
         urls = [self.api.get_video_url(id) for id in episode_ids]
         if not urls:
-            logging.error("Посилань на епізоди не знайдено.")
+            logging.error("No episode links found")
             return
 
-        logger.debug(f"Знайдено {len(urls)} посилань на епізоди.")
+        logger.debug(f"Found {len(urls)} episode links")
 
         if None in urls:
-            logger.warning("Деякі посилання на епізоди відсутні.")
+            logger.warning("Some episode links are missing!")
             urls = [url for url in urls if url is not None]
 
         self.player.play(urls)  # type: ignore

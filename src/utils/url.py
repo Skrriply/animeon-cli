@@ -8,15 +8,19 @@ def normalize_query(query: str) -> str:
     Returns:
         Normalized query.
     """
+    replacements = {
+        "/": "",  # Removed because server returns status code 500 when used
+        "\\": "%5C",
+        "?": "%3F",
+        "#": "%23",
+        "&": "%26",
+        "=": "%3D",
+        " ": "%20",
+    }
+
     query = query.strip()
-    # Character "/" is removed because server returns status code 500 when used
-    query = query.replace("/", "")
-    query = query.replace("\\", "%5C")
-    query = query.replace("?", "%3F")
-    query = query.replace("#", "%23")
-    query = query.replace("&", "%26")
-    query = query.replace("=", "%3D")
-    query = query.replace(" ", "%20")
+    for char, replacement in replacements.items():
+        query = query.replace(char, replacement)
 
     return query
 

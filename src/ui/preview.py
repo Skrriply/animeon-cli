@@ -27,9 +27,14 @@ class AnimePreviewGenerator:
         "anons": "Незабаром",
     }
 
-    def __init__(self) -> None:
-        """Initializes the generator."""
-        self.http_client = HTTPClient()
+    def __init__(self, http_client: HTTPClient) -> None:
+        """
+        Initializes the class.
+
+        Args:
+            http_client: HTTP client for making requests.
+        """
+        self.http_client = http_client
 
     def _create_preview(self, anime: Anime) -> str:
         """
@@ -41,6 +46,8 @@ class AnimePreviewGenerator:
         Returns:
             Formatted string.
         """
+        logger.debug(f"Creating preview for anime: {anime.title}")
+
         poster = self._generate_image_preview(anime.poster)
         type_ = self.TYPES.get(anime.type_, "Невідомо")
         rating = (
@@ -77,18 +84,22 @@ class AnimePreviewGenerator:
         Returns:
             ASCII art string if successful, None if failed.
         """
+        logger.debug(f"Generating image preview for URL: {image_url}")
+
         try:
             image = self.http_client.get(image_url, as_json=False)
 
-            process = subprocess.run(
+            with subprocess.Popen(
                 CHAFA_DEFAULT_COMMAND,
-                input=image,
-                capture_output=True,
-            )
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            ) as process:
+                stdout, _ = process.communicate(input=image)
 
-            return process.stdout.decode().strip()
+                return stdout.decode().strip() if stdout else None
         except subprocess.CalledProcessError as error:
-            logger.error(f"Помилка при виконанні команди: {error}.")
+            logger.error(f"Error executing chafa: {error}")
             return None
 
     def generate(self, anime_list: List[Anime]) -> str:
@@ -101,15 +112,19 @@ class AnimePreviewGenerator:
         Returns:
             Path to temporary JSON file containing preview data.
         """
+        logger.info(f"Generating previews for {len(anime_list)} anime")
+
         previews = {}
         for anime in anime_list:
             previews[anime.title] = self._create_preview(anime)
 
-        # Creates temporary JSON file
+        logger.debug("Creating temporary JSON file")
+
         with tempfile.NamedTemporaryFile(
             mode="w", encoding="utf-8", suffix=".json", delete=False
         ) as preview_file:
             json.dump(previews, preview_file, ensure_ascii=False, indent=4)
             preview_file_path = preview_file.name
+            logger.debug(f"Created temporary file at: {preview_file_path}")
 
         return preview_file_path

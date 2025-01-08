@@ -24,7 +24,7 @@ class CLI:
     @staticmethod
     def _create_parser() -> argparse.ArgumentParser:
         """Creates CLI argument parser."""
-        logger.debug("Створення парсера аргументів командного рядка.")
+        logger.debug("Creating command line argument parser")
 
         parser = argparse.ArgumentParser(
             prog="animeon",
@@ -43,7 +43,7 @@ class CLI:
             help="Вивести версію застосунку",
         )
         parser.add_argument(
-            "-l", "--logview", action="store_true", help="Увімкнути режим налагодження"
+            "-d", "--debug", action="store_true", help="Увімкнути режим налагодження"
         )
         parser.add_argument("query", nargs="+", help="Пошуковий запит")
 
@@ -56,9 +56,10 @@ class CLI:
         Returns:
             Parsed CLI arguments.
         """
+        logger.debug("Parsing command line arguments")
+
         args = self._parser.parse_args()
-        # Convert list of words to single string
-        args.query = " ".join(args.query)
+        args.query = " ".join(args.query)  # Converts list of words to single string
         return args
 
     def run(self, args: argparse.Namespace) -> None:
