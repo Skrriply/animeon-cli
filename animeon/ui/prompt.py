@@ -2,13 +2,21 @@ import logging
 import subprocess
 from typing import List, Optional, Set
 
-from animeon.config import FZF_DEFAULT_COMMAND, JQ_DEFAULT_COMMAND
-
 logger = logging.getLogger(__name__)
 
 
 class Prompt:
     """Class for prompting user with fzf."""
+
+    FZF_BASE_COMMAND = [
+        "fzf",
+        "--reverse",
+        "--cycle",
+        "--border=rounded",
+        "--preview-window=left:30%:wrap,border-rounded",
+        "--pointer=❯",
+        "--marker=◆ ",
+    ]
 
     @staticmethod
     def _validate_options(options: List[str]) -> bool:
@@ -43,11 +51,13 @@ class Prompt:
             return None
 
         # Changes input prompt text
-        command = [*FZF_DEFAULT_COMMAND, "--prompt", prompt_text]
+        command = [*self.FZF_BASE_COMMAND, "--prompt", prompt_text]
 
         # Adds preview if preview file is provided
         if preview_file:
-            preview_command = f"{' '.join(JQ_DEFAULT_COMMAND)} --arg title {{}} '.[$title]' {preview_file}"
+            preview_command = (
+                f"jq --raw-input --arg title {{}} '.[$title]' {preview_file}"
+            )
             command.extend(["--preview", preview_command])
 
         return self._run_fzf(command, "\n".join(options))
@@ -67,7 +77,7 @@ class Prompt:
             return None
 
         # Changes input prompt text and enables multiselection
-        command = [*FZF_DEFAULT_COMMAND, "--prompt", prompt_text, "--multi"]
+        command = [*self.FZF_BASE_COMMAND, "--prompt", prompt_text, "--multi"]
 
         stdout = self._run_fzf(command, "\n".join(options))
 

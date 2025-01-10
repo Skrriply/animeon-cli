@@ -4,7 +4,6 @@ import subprocess
 import tempfile
 from typing import List, Optional
 
-from animeon.config import CHAFA_DEFAULT_COMMAND
 from animeon.core import HTTPClient
 from animeon.models import Anime
 
@@ -14,6 +13,7 @@ logger = logging.getLogger(__name__)
 class AnimePreviewGenerator:
     """Class for creating previews of anime content."""
 
+    CHAFA_BASE_COMMAND = ["chafa", "--size=45x25"]
     TYPES = {
         "tv": "ТБ-серіал",
         "movie": "Фільм",
@@ -90,7 +90,7 @@ class AnimePreviewGenerator:
             image = self.http_client.get(image_url, as_json=False)
 
             with subprocess.Popen(
-                CHAFA_DEFAULT_COMMAND,
+                self.CHAFA_BASE_COMMAND,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

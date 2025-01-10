@@ -1,9 +1,14 @@
 import logging
 import subprocess
 
-from animeon.config import DEPENDENCIES
-
 logger = logging.getLogger(__name__)
+
+DEPENDENCIES = {
+    "fzf": ["fzf", "--version"],
+    "mpv": ["mpv", "--version"],
+    "chafa": ["chafa", "--version"],
+    "jq": ["jq", "--version"],
+}
 
 
 def check_dependencies() -> None:

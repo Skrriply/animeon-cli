@@ -18,6 +18,7 @@ class HTTPClient:
         url: str,
         params: Optional[Dict[str, str]] = None,
         headers: Optional[Dict[str, str]] = None,
+        timeout: Optional[int] = None,
         as_json: bool = True,
     ) -> Optional[Any]:
         """
@@ -27,6 +28,7 @@ class HTTPClient:
             url: URL to make the request to.
             params: Optional query parameters.
             headers: Optional request headers.
+            timeout: Optional request timeout in seconds.
             as_json: Whether to return response as JSON.
 
         Returns:
@@ -43,8 +45,11 @@ class HTTPClient:
                 logger.debug(f"Making GET request to {url}")
                 logger.debug(f"Parameters: {params}")
                 logger.debug(f"HTTP headers: {headers}")
+                logger.debug(f"Timeout: {timeout}")
 
-                response = session.get(url, params=params, headers=headers)
+                response = session.get(
+                    url, params=params, headers=headers, timeout=timeout
+                )
                 response.raise_for_status()
 
                 logger.debug(f"Server response: {response.status_code}")

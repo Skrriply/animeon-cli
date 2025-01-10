@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from animeon.config import API_BASE_URL, API_HEADERS
+from animeon.config import ApiConfig
 from animeon.models import Anime, Episode, Fandub, Player
 from animeon.utils import build_url, normalize_query
 
@@ -13,14 +13,21 @@ logger = logging.getLogger(__name__)
 class AnimeAPI:
     """Client for interacting with AnimeOn API."""
 
-    def __init__(self, http_client: HTTPClient) -> None:
+    BASE_URL = "https://animeon.club"
+    HEADERS = {"Referer": BASE_URL}
+
+    def __init__(
+        self, http_client: HTTPClient, config: Optional[ApiConfig] = None
+    ) -> None:
         """
         Initializes the class.
 
         Args:
-            HTTP client for making requests.
+            http_client: HTTP client for making requests.
+            config: Optional API configuration. If not provided, default configuration will be used.
         """
         self.http_client = http_client
+        self.config = config or ApiConfig.default()
 
     def _get_data(
         self, endpoint: str, params: Optional[Dict[str, str]] = None
@@ -35,13 +42,12 @@ class AnimeAPI:
         Returns:
             Response data if successful, None otherwise
         """
-        url = build_url(API_BASE_URL, endpoint)
+        url = build_url(self.BASE_URL, endpoint)
 
         logger.debug(f"Making GET request to {url} with parameters: {params}")
-        return self.http_client.get(url, params=params, headers=API_HEADERS)
+        return self.http_client.get(url, params=params, headers=self.HEADERS, timeout=self.config.timeout)
 
-    @staticmethod
-    def _get_poster_url(poster: Optional[str]) -> str:
+    def _get_poster_url(self, poster: Optional[str]) -> str:
         """
         Builds URL for poster image.
 
@@ -55,7 +61,7 @@ class AnimeAPI:
             logger.warning("Poster not found")
             return ""
 
-        return build_url(API_BASE_URL, f"api/uploads/images/{poster}")
+        return build_url(self.BASE_URL, f"api/uploads/images/{poster}")
 
     def _parse_anime(self, data: Dict[str, Any]) -> Optional[Anime]:
         """
