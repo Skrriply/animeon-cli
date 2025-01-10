@@ -56,7 +56,7 @@ class Prompt:
         # Adds preview if preview file is provided
         if preview_file:
             preview_command = (
-                f"jq --raw-input --arg title {{}} '.[$title]' {preview_file}"
+                f"jq --raw-output --arg title {{}} '.[$title]' {preview_file}"
             )
             command.extend(["--preview", preview_command])
 

@@ -3,8 +3,6 @@ import subprocess
 from abc import ABC, abstractmethod
 from typing import List
 
-from animeon.config import MPV_DEFAULT_COMMAND
-
 logger = logging.getLogger(__name__)
 
 
@@ -54,7 +52,7 @@ class MpvPlayer(VideoPlayer):
             logger.info(f"Playing {len(urls)} episodes via mpv")
             logger.debug(f"URLs: {urls}")
 
-            command = MPV_DEFAULT_COMMAND + urls
+            command = ["mpv", *urls]
             with subprocess.Popen(
                 command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             ) as process:
