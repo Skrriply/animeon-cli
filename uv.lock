@@ -8,6 +8,7 @@ source = { editable = "." }
 dependencies = [
     { name = "colorama" },
     { name = "requests" },
+    { name = "toml" },
 ]
 
 [package.dev-dependencies]
@@ -20,6 +21,7 @@ dev = [
 requires-dist = [
     { name = "colorama", specifier = ">=0.4.6" },
     { name = "requests", specifier = ">=2.32.3" },
+    { name = "toml", specifier = ">=0.10.2" },
 ]
 
 [package.metadata.requires-dev]
@@ -176,6 +178,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fe/08/4b54e02da73060ebc29368ab15868613f7d2496bde3b01d284d5423646bc/ruff-0.9.0-py3-none-win32.whl", hash = "sha256:d345f2178afd192c7991ddee59155c58145e12ad81310b509bd2e25c5b0247b3", size = 8807005 },
     { url = "https://files.pythonhosted.org/packages/a1/a7/0b422971e897c51bf805f998d75bcfe5d4d858f5002203832875fc91b733/ruff-0.9.0-py3-none-win_amd64.whl", hash = "sha256:0cbc0905d94d21305872f7f8224e30f4bbcd532bc21b2225b2446d8fc7220d19", size = 9689974 },
     { url = "https://files.pythonhosted.org/packages/73/0e/c00f66731e514be3299801b1d9d54efae0abfe8f00a5c14155f2ab9e2920/ruff-0.9.0-py3-none-win_arm64.whl", hash = "sha256:7b1148771c6ca88f820d761350a053a5794bc58e0867739ea93eb5e41ad978cd", size = 9147729 },
+]
+
+[[package]]
+name = "toml"
+version = "0.10.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588 },
 ]
 
 [[package]]

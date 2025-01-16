@@ -1,3 +1,27 @@
+import logging
+from pathlib import Path
+
+import colorama
+
+CONFIG_PATH = Path.home() / ".config" / "animeon" / "config.toml"
+DEFAULT_CONFIG = {
+    "api": {"timeout": 30},
+    "logging": {
+        "level": "ERROR",
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        "date_format": "%Y-%m-%d %H:%M:%S",
+    },
+}
+
+COLORS = {
+    logging.DEBUG: colorama.Fore.CYAN,
+    logging.INFO: colorama.Fore.GREEN,
+    logging.WARNING: colorama.Fore.YELLOW,
+    logging.ERROR: colorama.Fore.RED,
+    logging.CRITICAL: colorama.Fore.MAGENTA,
+}
+RESET = colorama.Style.RESET_ALL
+
 BASE_URL = "https://animeon.club"
 HEADERS = {"Referer": BASE_URL}
 

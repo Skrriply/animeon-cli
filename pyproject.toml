@@ -8,6 +8,7 @@ name = "animeon"
 dependencies = [
     "colorama>=0.4.6",
     "requests>=2.32.3",
+    "toml>=0.10.2",
 ]
 requires-python = ">=3.10"
 authors = [{ name = "Skrriply" }]

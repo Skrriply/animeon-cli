@@ -1,10 +1,9 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from animeon.config import ApiConfig
 from animeon.constants import BASE_URL, HEADERS
 from animeon.models import Anime, Episode, Fandub, Player
-from animeon.utils import build_url, normalize_query
+from animeon.utils import ConfigManager, build_url, normalize_query
 
 from .http import HTTPClient
 
@@ -14,9 +13,7 @@ logger = logging.getLogger(__name__)
 class AnimeAPI:
     """Client for interacting with AnimeOn API."""
 
-    def __init__(
-        self, http_client: HTTPClient, config: Optional[ApiConfig] = None
-    ) -> None:
+    def __init__(self, http_client: HTTPClient) -> None:
         """
         Initializes the class.
 
@@ -25,7 +22,7 @@ class AnimeAPI:
             config: Optional API configuration. If not provided, default configuration will be used.
         """
         self.http_client = http_client
-        self.config = config or ApiConfig.default()
+        self.config = ConfigManager()
 
     def _get_data(
         self, endpoint: str, params: Optional[Dict[str, str]] = None
@@ -43,7 +40,9 @@ class AnimeAPI:
         url = build_url(BASE_URL, endpoint)
 
         logger.debug(f"Making GET request to {url} with parameters: {params}")
-        return self.http_client.get(url, params=params, headers=HEADERS, timeout=self.config.timeout)
+        return self.http_client.get(
+            url, params=params, headers=HEADERS, timeout=self.config.get("api.timeout")
+        )
 
     def _get_poster_url(self, poster: Optional[str]) -> str:
         """
