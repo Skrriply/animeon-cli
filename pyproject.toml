@@ -5,7 +5,10 @@ build-backend = "hatchling.build"
 [project]
 dynamic = ["version"]
 name = "animeon"
-dependencies = ["requests>=2.32.3"]
+dependencies = [
+    "colorama>=0.4.6",
+    "requests>=2.32.3",
+]
 requires-python = ">=3.10"
 authors = [{ name = "Skrriply" }]
 description = "CLI інструмент для пошуку та відтворення аніме"

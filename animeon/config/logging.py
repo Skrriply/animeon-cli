@@ -2,6 +2,8 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Type
 
+from colorama import Fore, Style
+
 from .base import BaseConfig
 
 
@@ -31,11 +33,11 @@ class LoggingConfig(BaseConfig):
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
             date_format="%Y-%m-%d %H:%M:%S",
             colors={
-                logging.DEBUG: "\033[0;36m",
-                logging.INFO: "\033[0;32m",
-                logging.WARNING: "\033[0;33m",
-                logging.ERROR: "\033[0;31m",
-                logging.CRITICAL: "\033[0;35m",
+                logging.DEBUG: Fore.CYAN,
+                logging.INFO: Fore.GREEN,
+                logging.WARNING: Fore.YELLOW,
+                logging.ERROR: Fore.RED,
+                logging.CRITICAL: Fore.MAGENTA,
             },
-            reset="\033[0m",
+            reset=Style.RESET_ALL,
         )
