@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 from typing import List, Optional
 
+from animeon.constants import ANIME_STATUSES, ANIME_TYPES, CHAFA_BASE_COMMAND
 from animeon.core import HTTPClient
 from animeon.models import Anime
 
@@ -12,20 +13,6 @@ logger = logging.getLogger(__name__)
 
 class AnimePreviewGenerator:
     """Class for creating previews of anime content."""
-
-    CHAFA_BASE_COMMAND = ["chafa", "--size=45x25"]
-    TYPES = {
-        "tv": "ТБ-серіал",
-        "movie": "Фільм",
-        "ova": "OVA",
-        "ona": "ONA",
-        "special": "Спешл",
-    }
-    STATUSES = {
-        "ongoing": "Онґоінґ",
-        "released": "Завершено",
-        "anons": "Незабаром",
-    }
 
     def __init__(self, http_client: HTTPClient) -> None:
         """
@@ -49,13 +36,13 @@ class AnimePreviewGenerator:
         logger.debug(f"Creating preview for anime: {anime.title}")
 
         poster = self._generate_image_preview(anime.poster)
-        type_ = self.TYPES.get(anime.type_, "Невідомо")
+        type_ = ANIME_TYPES.get(anime.type_, "Невідомо")
         rating = (
             f"{anime.rating} ({anime.scored_by or '???'} голосів)"
             if anime.rating
             else "Немає"
         )
-        status = self.STATUSES.get(anime.status, "Невідомо")
+        status = ANIME_STATUSES.get(anime.status, "Невідомо")
         separator = "─" * 50
 
         return (
@@ -90,7 +77,7 @@ class AnimePreviewGenerator:
             image = self.http_client.get(image_url, as_json=False)
 
             with subprocess.Popen(
-                self.CHAFA_BASE_COMMAND,
+                CHAFA_BASE_COMMAND,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
