@@ -41,12 +41,12 @@ class HTTPClient:
             JSONDecodeError: If the response is not JSON when as_json is True.
         """
         try:
-            with self._session as session:
-                logger.debug(f"Making GET request to {url}")
-                logger.debug(f"Parameters: {params}")
-                logger.debug(f"HTTP headers: {headers}")
-                logger.debug(f"Timeout: {timeout}")
+            logger.debug(f"Making GET request to {url}")
+            logger.debug(f"Parameters: {params}")
+            logger.debug(f"HTTP headers: {headers}")
+            logger.debug(f"Timeout: {timeout}")
 
+            with self._session as session:
                 response = session.get(
                     url, params=params, headers=headers, timeout=timeout
                 )

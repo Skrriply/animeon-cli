@@ -12,11 +12,11 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Main entry point of the application."""
-    try:
-        # Sets up logging
-        logger_manager = LoggerManager()
-        logger_manager.setup_logging()
+    # Sets up logging
+    logger_manager = LoggerManager()
+    logger_manager.setup_logging()
 
+    try:
         # Checks dependencies
         check_dependencies()
 
@@ -40,8 +40,6 @@ def main() -> None:
         cli.run(args)
     except KeyboardInterrupt:
         logger.info("Exiting...")
-    except Exception as error:
-        logger.error(f"Unexpected error: {error}")
 
 
 if __name__ == "__main__":
