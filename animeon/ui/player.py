@@ -46,15 +46,17 @@ class MpvPlayer(VideoPlayer):
         Args:
             urls: List of video URLs.
         """
-        self._validate_urls(urls)
+        if not self._validate_urls(urls):
+            return
 
         try:
             logger.info(f"Playing {len(urls)} episodes via mpv")
             logger.debug(f"URLs: {urls}")
 
-            command = ["mpv", *urls]
             with subprocess.Popen(
-                command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                ["mpv", *urls], 
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             ) as process:
                 process.communicate()
         except subprocess.SubprocessError as error:

@@ -12,9 +12,6 @@ logger = logging.getLogger(__name__)
 class SearchCommand(BaseCommand):
     """Command for searching and playing anime."""
 
-    name = "search"
-    desciption = "Пошук та перегляд аніме."
-
     def __init__(
         self,
         api_client: AnimeAPI,

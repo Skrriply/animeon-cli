@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class BaseCommand(ABC):
     """Base class for commands."""
 
-    name: str = ""
-    desciption: str = ""
-
     @abstractmethod
-    def execute(self, *args, **kwargs) -> None:
+    def execute(self, *args: Any, **kwargs: Any) -> None:
         """Execute the command."""
         pass
