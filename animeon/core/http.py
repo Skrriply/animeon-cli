@@ -16,8 +16,8 @@ class HTTPClient:
     def get(
         self,
         url: str,
-        params: Optional[Dict[str, str]] = None,
-        headers: Optional[Dict[str, str]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
         as_json: bool = True,
     ) -> Optional[Any]:
@@ -40,12 +40,12 @@ class HTTPClient:
             HTTPError: If an HTTP error occurs.
             JSONDecodeError: If the response is not JSON when as_json is True.
         """
-        try:
-            logger.debug(f"Making GET request to {url}")
-            logger.debug(f"Parameters: {params}")
-            logger.debug(f"HTTP headers: {headers}")
-            logger.debug(f"Timeout: {timeout}")
+        logger.debug(f"Making GET request to {url}")
+        logger.debug(f"Parameters: {params}")
+        logger.debug(f"HTTP headers: {headers}")
+        logger.debug(f"Timeout: {timeout}")
 
+        try:
             with self._session as session:
                 response = session.get(
                     url, params=params, headers=headers, timeout=timeout

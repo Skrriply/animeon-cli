@@ -22,8 +22,7 @@ COLORS = {
 }
 RESET = colorama.Style.RESET_ALL
 
-BASE_URL = "https://animeon.club"
-HEADERS = {"Referer": BASE_URL}
+API_BASE_URL = "https://animeon.club"
 
 FZF_BASE_COMMAND = [
     "fzf",

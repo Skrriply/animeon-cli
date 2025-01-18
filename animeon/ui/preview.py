@@ -35,14 +35,15 @@ class AnimePreviewGenerator:
         """
         logger.debug(f"Creating preview for anime: {anime.title}")
 
-        poster = self._generate_image_preview(anime.poster)
-        type_ = ANIME_TYPES.get(anime.type_, "Невідомо")
+        poster = self._generate_image_preview(anime.poster) if anime.poster else ""
+        type_ = ANIME_TYPES.get(anime.type_) if anime.type_ else "Невідомо"
         rating = (
-            f"{anime.rating} ({anime.scored_by or '???'} голосів)"
+            f"{anime.rating or '0.0'} ({anime.scored_by or '???'} голосів)"
             if anime.rating
             else "Немає"
         )
-        status = ANIME_STATUSES.get(anime.status, "Невідомо")
+        status = ANIME_STATUSES.get(anime.status) if anime.status else "Невідомо"
+        genres = ", ".join(anime.genres) if anime.genres else "Невідомо"
         separator = "─" * 50
 
         return (
@@ -50,12 +51,15 @@ class AnimePreviewGenerator:
             f"{separator}\n"
             f"{anime.title}\n"
             f"{separator}\n"
-            f"📺 Тип: {type_}\n"
-            f"🎬 Епізодів: {anime.episodes_aired or '?'}/{anime.episodes or '?'}\n"
-            f"⭐ Рейтинг: {rating}\n"
-            f"📅 Рік: {anime.release_year or 'Невідомо'}\n"
-            f"📊 Статус: {status}\n"
-            f"🎬 Продюсер: {anime.producer or 'Невідомо'}\n"
+            f"⭐ Рейтинг:     {rating}\n"
+            f"🎬 Тип:         {type_}\n"
+            f"🗂️ Епізоди:     {anime.episodes_aired or '?'}/{anime.episodes or '?'}\n"
+            f"📊 Статус:      {status}\n"
+            f"📚 Жанри:       {genres}\n"
+            f"🗓️ Рік:         {anime.release_year or 'Невідомо'}\n"
+            f"📺 Студія:      {anime.studio or 'Невідомо'}\n"
+            f"👤 Режисер:     {anime.producer or 'Невідомо'}\n"
+            f"⏳ Тривалість:  {anime.episode_duration or 'Невідомо'}\n"
             f"{separator}\n"
             "📝 Опис:\n"
             f"{anime.description or 'Опис відсутній'}"

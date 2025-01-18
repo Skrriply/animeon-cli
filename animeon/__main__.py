@@ -1,11 +1,11 @@
 import logging
 
-from animeon.core import AnimeAPI
+from animeon.core import AnimeOnAPI, Extractor
 from animeon.core.http import HTTPClient
 from animeon.ui import CLI, ContentSelector, MpvPlayer, Prompt
 from animeon.ui.commands import SearchCommand
 from animeon.ui.preview import AnimePreviewGenerator
-from animeon.utils import LoggerManager, check_dependencies
+from animeon.utils import ConfigManager, LoggerManager, check_dependencies
 
 logger = logging.getLogger(__name__)
 
@@ -21,8 +21,12 @@ def main() -> None:
         check_dependencies()
 
         # Initializes components
+        config = ConfigManager()
         http_client = HTTPClient()
-        api_client = AnimeAPI(http_client)
+        extractor = Extractor()
+        api_client = AnimeOnAPI(
+            http_client, extractor, timeout=config.get("api.timeout")
+        )
         prompt = Prompt()
         preview_generator = AnimePreviewGenerator(http_client)
         selector = ContentSelector(prompt, preview_generator)

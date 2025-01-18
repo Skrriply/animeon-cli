@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from typing import List, Optional
 
 
 @dataclass(slots=True)
@@ -17,7 +18,10 @@ class Anime:
         episodes: Number of episodes of the anime.
         episodes_aired: Number of episodes aired of the anime.
         status: Status of the anime.
+        genres: List of genres of the anime.
+        studio: Studio that produced the anime.
         release_year: Year the anime was released.
+        epidode_duration: Duration of each episode.
         producer: Producer of the anime.
         description: Description of the anime.
         mal_id: MyAnimeList ID of the anime.
@@ -25,22 +29,26 @@ class Anime:
 
     id_: int
     title: str
-    poster: str
-    rating: float
-    scored_by: int
-    type_: str
-    episodes: int
-    episodes_aired: int
-    status: str
-    release_year: int
-    producer: str
-    description: str
-    mal_id: int
+    poster: Optional[str]
+    rating: Optional[float]
+    scored_by: Optional[int]
+    type_: Optional[str]
+    episodes: Optional[int]
+    episodes_aired: Optional[int]
+    status: Optional[str]
+    genres: Optional[List[str]]
+    studio: Optional[str]
+    release_year: Optional[int]
+    episode_duration: Optional[str]
+    producer: Optional[str]
+    description: Optional[str]
+    mal_id: Optional[int]
 
     def __post_init__(self) -> None:
         """
         Post initialization method.
         """
+        self.title = self.title.strip()
         if self.description:
             self.description = self._clean_text(self.description)
 

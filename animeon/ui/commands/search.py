@@ -1,6 +1,6 @@
 import logging
 
-from animeon.core.api import AnimeAPI
+from animeon.core.api import AnimeOnAPI
 from animeon.ui.player import VideoPlayer
 from animeon.ui.selector import ContentSelector
 
@@ -14,7 +14,7 @@ class SearchCommand(BaseCommand):
 
     def __init__(
         self,
-        api_client: AnimeAPI,
+        api_client: AnimeOnAPI,
         selector: ContentSelector,
         player: VideoPlayer,
     ) -> None:
@@ -36,13 +36,25 @@ class SearchCommand(BaseCommand):
         # Gets search results
         search_results = self.api.search(query)
         if not search_results:
-            logging.error("Anime not found")
+            logging.error("Search results not found")
             return
 
         logger.debug(f"Found {len(search_results)} search results")
 
+        # Gets anime
+        anime_list = [
+            anime
+            for result in search_results
+            if (anime := self.api.get_anime(result.id_))
+        ]
+        if not anime_list:
+            logging.error("Anime not found")
+            return
+
+        logger.debug(f"Found {len(anime_list)} anime")
+
         # Selects anime
-        selected_anime = self.selector.select_anime(search_results)
+        selected_anime = self.selector.select_anime(anime_list)
         if not selected_anime:
             logging.info("Anime not selected")
             return
