@@ -3,7 +3,10 @@ from pathlib import Path
 
 import colorama
 
+# Path to the application configuration file
 CONFIG_PATH = Path.home() / ".config" / "animeon" / "config.toml"
+
+# Default configuration settings
 DEFAULT_CONFIG = {
     "api": {"timeout": 30},
     "logging": {
@@ -13,6 +16,7 @@ DEFAULT_CONFIG = {
     },
 }
 
+# Color codes for log messages and reset
 COLORS = {
     logging.DEBUG: colorama.Fore.CYAN,
     logging.INFO: colorama.Fore.GREEN,
@@ -22,8 +26,10 @@ COLORS = {
 }
 RESET = colorama.Style.RESET_ALL
 
+# Base URL for the AnimeOn API
 API_BASE_URL = "https://animeon.club"
 
+# Base commands
 FZF_BASE_COMMAND = [
     "fzf",
     "--reverse",
@@ -36,6 +42,7 @@ FZF_BASE_COMMAND = [
 MPV_COMMAND = ["mpv"]
 CHAFA_BASE_COMMAND = ["chafa", "--size=45x25"]
 
+# Mapping of anime types and statuses to their names
 ANIME_TYPES = {
     "tv": "ТБ-серіал",
     "movie": "Фільм",
