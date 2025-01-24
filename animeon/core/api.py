@@ -43,19 +43,23 @@ class AnimeOnAPI:
         self, url: str, params: Optional[Dict[str, Any]] = None
     ) -> Optional[Any]:
         """
-        Makes a GET request to the API and returns the response data.
+        Makes a GET request to the specified URL.
 
         Args:
             url: URL to make the request to.
-            params: Optional query parameters.
+            params: Optional parameters to include in the request.
 
         Returns:
-            Response data if successful, None otherwise.
+            JSON response data if successful, None otherwise.
         """
-        logger.debug(f"Making GET request to {url} with parameters: {params}")
-        return self.http_client.get(
-            url, params=params, headers=self._HEADERS, timeout=self.timeout
-        )
+        try:
+            response = self.http_client.get(
+                url, params=params, headers=self._HEADERS, timeout=self.timeout
+            )
+            return response.json() if response else None
+        except ValueError as error:
+            logger.error(f"Error parsing JSON: {error}")
+            return None
 
     def search(self, query: str) -> List[SearchResult]:
         """

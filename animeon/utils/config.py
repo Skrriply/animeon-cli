@@ -29,7 +29,6 @@ class ConfigManager:
             CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
             logger.debug("Configuration file not found, using default settings.")
             self._config = DEFAULT_CONFIG
-            print("saving")
             self.save()
 
     def get(self, key: str, default: Optional[Any] = None) -> Any:

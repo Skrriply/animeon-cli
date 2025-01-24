@@ -78,17 +78,18 @@ class AnimePreviewGenerator:
         logger.debug(f"Generating image preview for URL: {image_url}")
 
         try:
-            image = self.http_client.get(image_url, as_json=False)
+            image = self.http_client.get(image_url)
 
-            with subprocess.Popen(
-                CHAFA_BASE_COMMAND,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            ) as process:
-                stdout, _ = process.communicate(input=image)
+            if image:
+                with subprocess.Popen(
+                    CHAFA_BASE_COMMAND,
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                ) as process:
+                    stdout, _ = process.communicate(input=image.content)
 
-                return stdout.decode().strip() if stdout else None
+                    return stdout.decode().strip() if stdout else None
         except subprocess.CalledProcessError as error:
             logger.error(f"Error executing chafa: {error}")
             return None

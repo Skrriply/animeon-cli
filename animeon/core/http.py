@@ -2,6 +2,12 @@ import logging
 from typing import Any, Dict, Optional
 
 import requests
+from requests.exceptions import (
+    ConnectionError,
+    HTTPError,
+    JSONDecodeError,
+    Timeout,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -11,7 +17,55 @@ class HTTPClient:
 
     def __init__(self) -> None:
         """Initializes the class."""
-        self._session = requests.Session()
+        self.session = requests.Session()
+
+    @staticmethod
+    def _handle_error(error: Exception) -> None:
+        """
+        Handles an error by logging it.
+
+        Args:
+            error: The error to handle.
+        """
+        if isinstance(error, ConnectionError):
+            logger.error(f"Connection error: {error}")
+        elif isinstance(error, Timeout):
+            logger.error(f"Request timed out: {error}")
+        elif isinstance(error, HTTPError):
+            logger.error(f"Failed to make request: {error}")
+        elif isinstance(error, JSONDecodeError):
+            logger.error(f"JSON decode error: {error}")
+
+    def _request(
+        self,
+        method: str,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Optional[requests.Response]:
+        """
+        Makes a request to the specified URL.
+
+        Args:
+            method: HTTP method to use.
+            url: URL to make the request to.
+            params: Optional parameters to include in the request.
+            headers: Optional headers to include in the request.
+            timeout: Optional timeout for the request.
+
+        Returns:
+            Response from the request if successful, None otherwise.
+        """
+        try:
+            response = self.session.request(
+                method, url, params=params, headers=headers, timeout=timeout
+            )
+            response.raise_for_status()
+            return response
+        except (ConnectionError, Timeout, HTTPError, JSONDecodeError) as error:
+            self._handle_error(error)
+            return None
 
     def get(
         self,
@@ -19,47 +73,19 @@ class HTTPClient:
         params: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
-        as_json: bool = True,
-    ) -> Optional[Any]:
+    ) -> Optional[requests.Response]:
         """
         Makes a GET request to the specified URL.
 
         Args:
             url: URL to make the request to.
-            params: Optional query parameters.
-            headers: Optional request headers.
-            timeout: Optional request timeout in seconds.
-            as_json: Whether to return response as JSON.
+            params: Optional parameters to include in the request.
+            headers: Optional headers to include in the request.
+            timeout: Optional timeout for the request.
 
         Returns:
-            Response data as JSON dict or raw content if as_json is False.
-
-        Raises:
-            ConnectionError: If a connection error occurs.
-            Timeout: If the request times out.
-            HTTPError: If an HTTP error occurs.
-            JSONDecodeError: If the response is not JSON when as_json is True.
+            Response from the request if successful, None otherwise.
         """
-        logger.debug(f"Making GET request to {url}")
-        logger.debug(f"Parameters: {params}")
-        logger.debug(f"HTTP headers: {headers}")
-        logger.debug(f"Timeout: {timeout}")
-
-        try:
-            with self._session as session:
-                response = session.get(
-                    url, params=params, headers=headers, timeout=timeout
-                )
-                response.raise_for_status()
-
-                logger.debug(f"Server response: {response.status_code}")
-
-                return response.json() if as_json else response.content
-        except requests.exceptions.ConnectionError as error:
-            logger.error(f"Connection error: {error}")
-        except requests.exceptions.Timeout as error:
-            logger.error(f"Request timed out: {error}")
-        except requests.exceptions.HTTPError as error:
-            logger.error(f"Failed to make request: {error}")
-        except requests.exceptions.JSONDecodeError as error:
-            logger.error(f"JSON decode error: {error}")
+        return self._request(
+            "GET", url, params=params, headers=headers, timeout=timeout
+        )
