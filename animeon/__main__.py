@@ -18,7 +18,7 @@ def main() -> None:
     config = ConfigManager(CONFIG_PATH, DEFAULT_CONFIG)
     
     # Sets up logging
-    logger_manager = LoggerManager(config.get("logging.level"), format=config.get("logging.format"), date_format=config.get("logging.date_format"))
+    logger_manager = LoggerManager(config.get("logging.level"))
     logger_manager.setup_logging()
 
     try:
