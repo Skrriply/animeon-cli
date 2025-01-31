@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 class MpvPlayer(BasePlayer):
     """A class to interact with the mpv video player."""
 
+    EXECUTABLE = "mpv"
+
     def __init__(self, extra_args: Optional[List[str]] = None) -> None:
         """
         Initializes the class.
@@ -30,7 +32,7 @@ class MpvPlayer(BasePlayer):
         Returns:
             The built command.
         """
-        command = ["mpv"]  # TODO: Replace with MPV_BASE_COMMAND
+        command = [self.EXECUTABLE]
 
         # Adds title if provided
         if title:

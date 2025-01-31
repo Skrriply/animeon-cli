@@ -1,9 +1,8 @@
 import logging
+from pathlib import Path
 from typing import Any, Optional
 
 import toml
-
-from animeon.constants import CONFIG_PATH, DEFAULT_CONFIG
 
 logger = logging.getLogger(__name__)
 
@@ -11,25 +10,41 @@ logger = logging.getLogger(__name__)
 class ConfigManager:
     """Manages application configuration."""
 
-    def __init__(self) -> None:
-        """Initializes the class."""
-        self._config = {}
-        self._load_config()
+    def __init__(self, config_path: Path, default_config: str) -> None:
+        """
+        Initializes the class.
 
-    def _load_config(self) -> None:
-        """Loads configuration from the TOML file."""
-        if CONFIG_PATH.exists():
-            logger.debug(f"Loading configuration from: {CONFIG_PATH}")
-            try:
-                self._config = toml.load(CONFIG_PATH)
-            except toml.TomlDecodeError as e:
-                logger.error(f"Error decoding TOML file: {e}")
-                self._config = {}
+        Args:
+            config_path: The path to the configuration file.
+            default_config: The default configuration as a string.
+        """
+        self.config = {}
+        self.config_path = config_path
+        self.default_config = default_config
+
+        if self.config_path.exists():
+            self._load()
         else:
-            CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-            logger.debug("Configuration file not found, using default settings.")
-            self._config = DEFAULT_CONFIG
-            self.save()
+            self._create()
+            self._load()
+
+    def _create(self) -> None:
+        """Creates a new configuration file."""
+        self.config_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(self.config_path, "w", encoding="utf-8") as file:
+            file.write(self.default_config)
+
+        logger.debug(f"Configuration created at: {self.config_path}")
+
+    def _load(self) -> None:
+        """Loads configuration from the TOML file."""
+        logger.debug(f"Loading configuration from: {self.config_path}")
+
+        try:
+            self.config = toml.load(self.config_path)
+        except toml.TomlDecodeError as error:
+            logger.error(f"Error decoding TOML file: {error}")
 
     def get(self, key: str, default: Optional[Any] = None) -> Any:
         """
@@ -43,7 +58,8 @@ class ConfigManager:
             The configuration value or the default if not found.
         """
         keys = key.split(".")
-        value = self._config
+        value = self.config
+
         try:
             for k in keys:
                 value = value[k]
@@ -51,32 +67,3 @@ class ConfigManager:
         except (KeyError, TypeError):
             logger.debug(f"Key '{key}' not found, returning default: {default}")
             return default
-
-    def set(self, key: str, value: Any) -> None:
-        """
-        Sets a configuration value using a dot-notation key.
-        Creates nested dictionaries if necessary.
-
-        Args:
-             key: The key to set (e.g., "api.timeout").
-             value: The value to set.
-        """
-        keys = key.split(".")
-        current = self._config
-
-        for k in keys[:-1]:
-            if k not in current:
-                current[k] = {}
-            current = current[k]
-
-        current[keys[-1]] = value
-        logger.debug(f"Set config value: {key} = {value}")
-
-    def save(self) -> None:
-        """Saves the current configuration to the TOML file."""
-        try:
-            with open(CONFIG_PATH, "w", encoding="utf-8") as file:
-                toml.dump(self._config, file)
-            logger.debug(f"Configuration saved to: {CONFIG_PATH}")
-        except Exception as e:
-            logger.error(f"Failed to save config: {e}")

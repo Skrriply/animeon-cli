@@ -1,18 +1,33 @@
 # TODO: Split classes into separate files
 import logging
+from typing import Optional
 
-from animeon.constants import COLORS, RESET
-from animeon.utils.config import ConfigManager
+import colorama
 
 
 class ColorFormatter(logging.Formatter):
     """Logging formatter that adds color to log messages."""
 
-    def __init__(self) -> None:
-        """Initializes the formatter."""
-        self.config = ConfigManager()
-        format = self.config.get("logging.format")
-        date_format = self.config.get("logging.date_format")
+    # Color codes for log messages and reset
+    COLORS = {
+        logging.DEBUG: colorama.Fore.CYAN,
+        logging.INFO: colorama.Fore.GREEN,
+        logging.WARNING: colorama.Fore.YELLOW,
+        logging.ERROR: colorama.Fore.RED,
+        logging.CRITICAL: colorama.Fore.MAGENTA,
+    }
+    RESET = colorama.Style.RESET_ALL
+
+    def __init__(
+        self, format: Optional[str] = None, date_format: Optional[str] = None
+    ) -> None:
+        """
+        Initializes the class.
+
+        Args:
+            format: Format string to use.
+            date_format: Date format string to use.
+        """
         super().__init__(fmt=format, datefmt=date_format)
 
     def format(self, record: logging.LogRecord) -> str:
@@ -24,8 +39,8 @@ class ColorFormatter(logging.Formatter):
         Returns:
             Formatted log message.
         """
-        color = COLORS.get(record.levelno, RESET)
-        record.levelname = f"{color}{record.levelname}{RESET}"
+        color = self.COLORS.get(record.levelno, self.RESET)
+        record.levelname = f"{color}{record.levelname}{self.RESET}"
 
         return super().format(record)
 
@@ -33,9 +48,21 @@ class ColorFormatter(logging.Formatter):
 class LoggerManager:
     """Manages logging setup and configuration."""
 
-    def __init__(self) -> None:
-        """Initializes the class."""
-        self.config = ConfigManager()
+    def __init__(
+        self,
+        level: str,
+        format: Optional[str] = None,
+        date_format: Optional[str] = None,
+    ) -> None:
+        """
+        Initializes the class.
+
+        Args:
+            level: Logging level to use.
+        """
+        self.level = level
+        self.format = format
+        self.date_format = date_format
         self.root_logger = logging.getLogger()
         self.logger = logging.getLogger(__name__)
 
@@ -47,7 +74,7 @@ class LoggerManager:
             Configured console handler.
         """
         handler = logging.StreamHandler()
-        formatter = ColorFormatter()
+        formatter = ColorFormatter(format=self.format, date_format=self.date_format)
         handler.setFormatter(formatter)
 
         return handler
@@ -59,8 +86,7 @@ class LoggerManager:
     def setup_logging(self) -> None:
         """Sets up basic logging configuration."""
         self._clear_handlers()
-        level = self.config.get("logging.level")
-        self.root_logger.setLevel(level)
+        self.root_logger.setLevel(self.level)
         handler = self._create_console_handler()
         self.root_logger.addHandler(handler)
         self.logger.info("Logging started")

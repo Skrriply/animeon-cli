@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict, List, Optional
 
-from animeon.constants import API_BASE_URL
 from animeon.models import Anime, Episode, Fandub, SearchResult
 
 from .extractor import Extractor
@@ -13,13 +12,14 @@ logger = logging.getLogger(__name__)
 class AnimeOnAPI:
     """Client for interacting with AnimeOn API."""
 
-    _HEADERS = {"Referer": API_BASE_URL}
-    _SEARCH_ENDPOINT = f"{API_BASE_URL}/api/anime"
-    _ANIME_ENDPOINT = f"{API_BASE_URL}/api/anime"
-    _FANDUBS_ENDPOINT = f"{API_BASE_URL}/api/player/fundubs"
-    _EPISODES_ENDPOINT = f"{API_BASE_URL}/api/player/episodes"
-    _EPISODE_ENDPOINT = f"{API_BASE_URL}/api/player/episode"
-    _POSTER_ENDPOINT = f"{API_BASE_URL}/api/uploads/images"
+    BASE_URL = "https://animeon.club"
+    _HEADERS = {"Referer": BASE_URL}
+    _SEARCH_ENDPOINT = f"{BASE_URL}/api/anime"
+    _ANIME_ENDPOINT = f"{BASE_URL}/api/anime"
+    _FANDUBS_ENDPOINT = f"{BASE_URL}/api/player/fundubs"
+    _EPISODES_ENDPOINT = f"{BASE_URL}/api/player/episodes"
+    _EPISODE_ENDPOINT = f"{BASE_URL}/api/player/episode"
+    _POSTER_ENDPOINT = f"{BASE_URL}/api/uploads/images"
 
     def __init__(
         self,

@@ -2,8 +2,6 @@ import logging
 import subprocess
 from typing import List, Optional
 
-from animeon.constants import FZF_BASE_COMMAND
-
 from .base import BasePrompter
 
 logger = logging.getLogger(__name__)
@@ -11,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 class FzfPrompter(BasePrompter):
     """A class to interact with the fzf."""
+
+    EXECUTABLE = "fzf"
 
     def __init__(self, extra_args: Optional[List[str]] = None) -> None:
         """
@@ -34,7 +34,7 @@ class FzfPrompter(BasePrompter):
         Returns:
             The built command.
         """
-        command = [*FZF_BASE_COMMAND]
+        command = [self.EXECUTABLE]
 
         # Adds title if provided
         if title:
