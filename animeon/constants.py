@@ -3,8 +3,14 @@ from pathlib import Path
 
 import colorama
 
+# Path to user's home directory
+HOME_DIR = Path.home()
+
 # Path to the application configuration file
-CONFIG_PATH = Path.home() / ".config" / "animeon" / "config.toml"
+CONFIG_PATH = HOME_DIR / ".config" / "animeon" / "config.toml"
+
+# Path to the application cache directory
+CACHE_DIR = HOME_DIR / ".cache" / "animeon"
 
 # Default configuration settings
 DEFAULT_CONFIG = {
@@ -35,7 +41,7 @@ FZF_BASE_COMMAND = [
     "--reverse",
     "--cycle",
     "--border=rounded",
-    "--preview-window=left:30%:wrap,border-rounded",
+    "--preview-window=left,30%,wrap",
     "--pointer=❯",
     "--marker=◆ ",
 ]

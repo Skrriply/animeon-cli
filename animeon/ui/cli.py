@@ -2,7 +2,7 @@ import argparse
 import logging
 from typing import Mapping
 
-from animeon import __version__
+from animeon import __prog_name__, __version__
 from animeon.ui.commands import BaseCommand
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ class CLI:
         logger.debug("Creating command line argument parser")
 
         parser = argparse.ArgumentParser(
-            prog="animeon",
+            prog=__prog_name__,
             description="CLI інструмент для пошуку та відтворення аніме",
             usage="%(prog)s [параметри] <query>",
             add_help=False,

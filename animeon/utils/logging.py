@@ -1,3 +1,4 @@
+# TODO: Split classes into separate files
 import logging
 
 from animeon.constants import COLORS, RESET

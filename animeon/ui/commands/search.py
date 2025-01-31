@@ -1,7 +1,7 @@
 import logging
 
 from animeon.core.api import AnimeOnAPI
-from animeon.ui.player import VideoPlayer
+from animeon.integrations.players import BasePlayer
 from animeon.ui.selector import ContentSelector
 
 from .base import BaseCommand
@@ -16,7 +16,7 @@ class SearchCommand(BaseCommand):
         self,
         api_client: AnimeOnAPI,
         selector: ContentSelector,
-        player: VideoPlayer,
+        player: BasePlayer,
     ) -> None:
         """
         Initializes the command.
@@ -100,25 +100,23 @@ class SearchCommand(BaseCommand):
 
         logger.debug(f"Found {len(episodes)} episodes")
 
-        # Selects episodes
-        selected_episodes = self.selector.select_episodes(episodes)
-        if not selected_episodes:
-            logging.info("Episodes not selected")
-            return
+        while True:
+            # Selects episodes
+            selected_episode = self.selector.select_episode(episodes)
+            if not selected_episode:
+                logging.info("Episode not selected")
+                return
 
-        logger.debug(f"Selected {len(selected_episodes)} episodes")
+            logger.debug(f"Selected {selected_episode.episode} episode")
 
-        # Gets video URLs for selected episodes
-        episode_ids = [episode.id_ for episode in selected_episodes]
-        urls = [self.api.get_video_url(id) for id in episode_ids]
-        if not urls:
-            logging.error("No episode links found")
-            return
+            # Gets video URLs for selected episodes
+            url = self.api.get_video_url(selected_episode.id_)
+            if not url:
+                logging.error("No episode link found")
+                return
 
-        logger.debug(f"Found {len(urls)} episode links")
-
-        if None in urls:
-            logger.warning("Some episode links are missing!")
-            urls = [url for url in urls if url is not None]
-
-        self.player.play(urls)  # type: ignore
+            # TODO: Add check for MpvPlayer
+            self.player.play(
+                url,
+                title=f"{selected_anime.title} - Епізод {selected_episode.episode}",  # type: ignore
+            )

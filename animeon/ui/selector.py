@@ -1,10 +1,10 @@
 import logging
+from pathlib import Path
 from typing import List, Optional
 
+from animeon.integrations.prompters.base import BasePrompter
 from animeon.models import Anime, Episode, Fandub, Player
-
-from .preview import AnimePreviewGenerator
-from .prompt import Prompt
+from animeon.utils.preview import AnimePreviewGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -13,16 +13,16 @@ class ContentSelector:
     """Class for selecting anime content."""
 
     def __init__(
-        self, prompt: Prompt, preview_generator: AnimePreviewGenerator
+        self, prompter: BasePrompter, preview_generator: AnimePreviewGenerator
     ) -> None:
         """
         Initializes the class.
 
         Args:
-            prompt: Interface for user prompting.
+            prompter: Interface for user prompting.
             preview_generator: Object for creating previews of anime content.
         """
-        self.prompt = prompt
+        self.prompter = prompter
         self.preview_generator = preview_generator
 
     def select_anime(self, anime_list: List[Anime]) -> Optional[Anime]:
@@ -37,8 +37,14 @@ class ContentSelector:
         """
         preview_file = self.preview_generator.generate(anime_list)
         anime_titles = [anime.title for anime in anime_list]
-        selected_title = self.prompt.single_select(
-            "Оберіть аніме: ", anime_titles, preview_file=preview_file
+
+        script = Path.cwd() / "animeon" / "scripts" / "fzf_preview.sh"
+
+        # TODO: Add check for FzfPrompter
+        selected_title = self.prompter.prompt(
+            anime_titles,
+            title="Оберіть аніме: ",
+            preview_command=f"sh {script} {{}} {preview_file}",  # type: ignore
         )
 
         if not selected_title:
@@ -58,7 +64,7 @@ class ContentSelector:
             Selected fandub or None if no fandub is selected.
         """
         fandub_names = [fandub.name for fandub in fandubs]
-        selected_name = self.prompt.single_select("Оберіть озвучення: ", fandub_names)
+        selected_name = self.prompter.prompt(fandub_names, title="Оберіть озвучення: ")
 
         if not selected_name:
             logger.info("Fandub not selected")
@@ -77,7 +83,7 @@ class ContentSelector:
             Selected player or None if no player is selected.
         """
         player_names = [player.name for player in players]
-        selected_name = self.prompt.single_select("Оберіть плеєр: ", player_names)
+        selected_name = self.prompter.prompt(player_names, title="Оберіть плеєр: ")
 
         if not selected_name:
             logger.info("Player not selected")
@@ -85,27 +91,27 @@ class ContentSelector:
 
         return next(player for player in players if player.name == selected_name)
 
-    def select_episodes(self, episodes: List[Episode]) -> Optional[List[Episode]]:
+    def select_episode(self, episodes: List[Episode]) -> Optional[Episode]:
         """
-        Selects episodes from the list.
+        Selects episode from the list.
 
         Args:
             episodes: List of episodes.
 
         Returns:
-            Selected episodes or None if no episode is selected.
+            Selected episode or None if no episode is selected.
         """
         episode_options = [f"Епізод {episode.episode}" for episode in episodes]
-        selected_options = self.prompt.multi_select(
-            "Оберіть епізоди: ", episode_options
+        selected_episode = self.prompter.prompt(
+            episode_options, title="Оберіть епізоди: "
         )
 
-        if not selected_options:
-            logger.info("Episodes not selected")
+        if not selected_episode:
+            logger.info("Episode not selected")
             return None
 
-        return [
+        return next(
             episode
             for episode in episodes
-            if f"Епізод {episode.episode}" in selected_options
-        ]
+            if f"Епізод {episode.episode}" == selected_episode
+        )
