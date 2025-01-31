@@ -4,10 +4,12 @@ import subprocess
 logger = logging.getLogger(__name__)
 
 DEPENDENCIES = {
-    "fzf": ["fzf", "--version"],
     "mpv": ["mpv", "--version"],
-    "chafa": ["chafa", "--version"],
+    "fzf": ["fzf", "--version"],
+    "bash": ["bash", "--version"],
     "jq": ["jq", "--version"],
+    "chafa": ["chafa", "--version"],
+    "kitty": ["kitty", "--version"],
 }
 
 
@@ -23,4 +25,4 @@ def check_dependencies() -> None:
             ) as process:
                 process.communicate()
         except (subprocess.SubprocessError, FileNotFoundError):
-            logger.error(f"{name} is not installed!")
+            logger.warning(f"{name} is not installed!")
